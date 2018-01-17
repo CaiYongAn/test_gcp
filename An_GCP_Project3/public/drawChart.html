@@ -1,0 +1,55 @@
+
+    <!-- script for plottng data which is updated above  -->
+    <!-- Google Chart -->
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      function drawBarChart() {
+        // Create and populate the data table from the values received via websocket
+        var data = google.visualization.arrayToDataTable([
+          ['sensor02', '1'],
+          [sensorId[0], sensorValues[0]],
+          ['sensor03', sensorValues[0]]
+          ]);
+
+        // use a DataView to 0-out all the values in the data set for the initial draw
+        var view = new google.visualization.DataView(data);
+        view.setColumns([0, {
+          type: 'number',
+          label: data.getColumnLabel(1),
+          calc: function () {return 0;}
+        }]);
+
+
+        var options = {
+          title:"Sensor data",
+          width: 600,
+          height: 400,
+          bar: { groupWidth: "95%" },
+          legend: { position: "none" },
+          animation: {
+              duration: 800
+          },
+          hAxis: {
+              // set these values to make the initial animation smoother
+              minValue: 0,
+              maxValue: 10
+          }
+        };
+    
+        // Create and draw the plot
+        var barChart = new google.visualization.BarChart(document.getElementById('data_bar_chart'));
+
+        var runOnce = google.visualization.events.addListener(barChart, 'ready', function () {
+            google.visualization.events.removeListener(runOnce);
+            barChart.draw(data, options);
+        });
+    
+        barChart.draw(view, options);
+    
+        // you can handle the resizing here - no need to recreate your data and charts from scratch
+        $(window).resize(function() {
+            barChart.draw(data, options);
+        });
+      }
+      google.load('visualization', '1', {packages: ['corechart'], callback: drawBarChart}); 
+    </script>

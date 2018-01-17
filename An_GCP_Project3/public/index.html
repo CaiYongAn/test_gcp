@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body {
+        font-family: Tahoma, Geneva, sans-serif;
+      }
+      div {
+        display: inline;
+      }
+    </style>
+
+    <script>
+      function updateStats(memuse) {
+        document.getElementById('rss').innerHTML = memuse.rss;
+        document.getElementById('heapTotal').innerHTML = memuse.heapTotal;
+        document.getElementById('heapUsed').innerHTML = memuse.heapUsed;
+      }
+
+      // var host = window.document.location.host.replace(/:.*/, '');
+      var host = 'localhost';
+      var ws = new WebSocket('ws://' + host + ':8080');
+      ws.onmessage = function (event) {
+        updateStats(JSON.parse(event.data));
+      };
+    </script>
+
+
+  </head>
+  <body>
+    <strong>Server Stats</strong><br>
+    RSS: <div id='rss'></div><br>
+    Heap total: <div id='heapTotal'></div><br>
+    Heap used: <div id='heapUsed'></div><br>
+
+   <!--  <div visibility="hidden"  id="send">
+      <input type="text" id="iptSend" placeholder="send message to server" />
+      <input type="button" value="send" id="btnSend">
+    </div><br> -->
+
+    <div id="messages"> </div><br>
+    <!-- <div id="data_bar_chart"></div><br> -->
+    <div id="data_line_chart"></div>
+    
+    <!-- script for receiving data from server  -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script> 
+      var sensorValues = [0,0,0,0]; //initial value for the plot = 0
+      var sensorId = ["sensor01","","","0"]; //initial value for the plot = 0
+
+      function updateStats2(mData) {
+        document.getElementById('messages').innerHTML = "sensor id: " + mData.id + "\nsensor value: " + mData.value; 
+        sensorValues[0]=mData.value;
+        drawLineChart(mData.value);
+
+      }
+
+      $(function(){
+          // var host = 'localhost'; //test on local host : http://localhost:8080/
+          var host = 'localhost';
+          var ws2 = new WebSocket('ws://' + host + ':443'); 
+          // var ws = new WebSocket('ws://' + host + ':8080');
+
+          $('#btnSend').click(function(){
+            ws2.send($('#iptSend').val());
+          });
+
+          ws2.onmessage = function (event) {
+            console.log(event.data);
+            // $('#messages').append(event.data+'<br />'); 
+            // updateStats2(event.data); 
+
+            updateStats2(JSON.parse(event.data));
+            // drawBarChart();
+          };
+      });
+
+    </script>
+
+
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script> 
+    <script type="text/javascript">
+      // google.charts.load('current', {'packages':['corechart']});
+      // google.charts.setOnLoadCallback(drawChart);
+      google.charts.load('current', {packages: ['corechart', 'line']});
+      google.charts.setOnLoadCallback(drawLineChart);
+
+      var xTmp=0; 
+      var mTotalDataInChart = [] 
+      function drawLineChart(mSensorsData) {
+        console.log("draw chart....");
+        var data2 = new google.visualization.DataTable();
+          // var data = google.visualization.arrayToDataTable(json);
+        data2.addColumn('number', 'X');
+        data2.addColumn('number', 'Y1');
+        data2.addColumn('number', 'Y2');
+
+        xTmp++; 
+        console.log("(drawLineChart):"+ xTmp + ',' + mSensorsData);
+        mSensorsData2 = [xTmp,mSensorsData,mSensorsData+2]
+
+        mTotalDataInChart.push(mSensorsData2);
+        data2.addRows(mTotalDataInChart);
+  
+        if(xTmp>10)
+          mTotalDataInChart.shift(); 
+          // mTotalDataInChart=[]
+
+        // data2.addRows([mSensorsData2]); 
+        // data2.addRows([
+        //   [0, 0, 0],    [1, 10, 5],   [2, 23, 15],  [3, 17, 9],   [4, 18, 10],  [5, 9, 5],
+        //   [6, 11, 3],   [7, 27, 19],  [8, 33, 25],  [9, 40, 32],  [10, 32, 24], [11, 35, 27],
+        //   [12, 30, 22], [13, 40, 32], [14, 42, 34], [15, 47, 39], [16, 44, 36], [17, 48, 40],
+        //   [18, 52, 44], [19, 54, 46], [20, 42, 34], [21, 55, 47], [22, 56, 48], [23, 57, 49],
+        //   [24, 60, 52], [25, 50, 42], [26, 52, 44], [27, 51, 43], [28, 49, 41], [29, 53, 45],
+        //   [30, 55, 47], [31, 60, 52], [32, 61, 53], [33, 59, 51], [34, 62, 54], [35, 65, 57],
+        //   [36, 62, 54], [37, 58, 50], [38, 55, 47], [39, 61, 53], [40, 64, 56], [41, 65, 57],
+        //   [42, 63, 55], [43, 66, 58], [44, 67, 59], [45, 69, 61], [46, 69, 61], [47, 70, 62],
+        //   [48, 72, 64], [49, 68, 60], [50, 66, 58], [51, 65, 57], [52, 67, 59], [53, 70, 62],
+        //   [54, 71, 63], [55, 72, 64], [56, 73, 65], [57, 75, 67], [58, 70, 62], [59, 68, 60],
+        //   [60, 64, 56], [61, 60, 52], [62, 65, 57], [63, 67, 59], [64, 68, 60], [65, 69, 61],
+        //   [66, 70, 62], [67, 72, 64], [68, 75, 67], [69, 80, 72]
+        //   ]);
+
+        var options = {
+          hAxis: {
+            title: 'Time',
+            textStyle: {
+              color: '#01579b',
+              fontSize: 20,
+              fontName: 'Arial',
+              bold: true,
+              italic: true
+            },
+            titleTextStyle: {
+              color: '#01579b',
+              fontSize: 16,
+              fontName: 'Arial',
+              bold: false,
+              italic: true
+            }
+          },
+          vAxis: {
+            title: 'Value',
+            textStyle: {
+              color: '#1a237e',
+              fontSize: 24,
+              bold: true
+            },
+            titleTextStyle: {
+              color: '#1a237e',
+              fontSize: 24,
+              bold: true
+            }
+          },
+          colors: ['#a52714', '#097138']
+        };
+
+        var lineChart = new google.visualization.LineChart(document.getElementById('data_line_chart'));
+
+        lineChart.draw(data2, options);
+
+      } 
+
+    </script>
+  </body>
+</html>
