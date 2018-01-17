@@ -28,7 +28,7 @@ server.on('request', app);
 //   console.log('Listening on http://localhost:8080');
 // });
 
-server.listen(8080, '0.0.0.0');
+server.listen(8080, '10.140.0.2');
 
 // for back -> front  
 var wss = new WebSocketServer({server: server});
