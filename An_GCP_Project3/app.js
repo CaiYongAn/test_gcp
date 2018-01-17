@@ -24,9 +24,11 @@ app.get('/_ah/start', function(req, res) {
 
 var server = http.createServer(app);
 server.on('request', app);
-server.listen(8080, function () {
-  console.log('Listening on http://localhost:8080');
-});
+// server.listen(8080, function () {
+//   console.log('Listening on http://localhost:8080');
+// });
+
+server.listen(8080, '0.0.0.0');
 
 // for back -> front  
 var wss = new WebSocketServer({server: server});
