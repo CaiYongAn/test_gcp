@@ -6,8 +6,8 @@ api_version: 1
 manual_scaling:
   instances: 1
 
-network:
-  forwarded_ports: ["443"]
+# network:
+#   forwarded_ports: ["443"]
 
 handlers:
 

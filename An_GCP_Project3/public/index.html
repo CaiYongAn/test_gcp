@@ -18,7 +18,7 @@
       }
 
       // var host = window.document.location.host.replace(/:.*/, '');
-      var host = 'localhost';
+      var host = '104.199.157.116';
       var ws = new WebSocket('ws://' + host + ':8080');
       ws.onmessage = function (event) {
         updateStats(JSON.parse(event.data));
@@ -57,7 +57,7 @@
 
       $(function(){
           // var host = 'localhost'; //test on local host : http://localhost:8080/
-          var host = 'localhost';
+          var host = '104.199.157.116';
           var ws2 = new WebSocket('ws://' + host + ':443'); 
           // var ws = new WebSocket('ws://' + host + ':8080');
 
