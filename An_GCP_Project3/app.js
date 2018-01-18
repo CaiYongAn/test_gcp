@@ -24,13 +24,14 @@ app.get('/_ah/start', function(req, res) {
 
 var server = http.createServer(app);
 server.on('request', app);
-// server.listen(8080, function () {
-//   console.log('Listening on http://localhost:8080');
-// });
+server.listen(8080, function () {
+   console.log('Listening on http://localhost:8080');
+ });
 
-server.listen(8080, '0.0.0.0');
+//server.listen(8080, '0.0.0.0');
 
 // for back -> front  
+/*
 var wss = new WebSocketServer({server: server});
 wss.on('connection', function(ws){
   console.log('socket connected');  
@@ -38,7 +39,7 @@ wss.on('connection', function(ws){
       // JSON.stringify() method converts a JavaScript value to a JSON string,
       console.log('(send from server-json):' + JSON.stringify(process.memoryUsage()));
       // console.log('(send from server):%j', process.memoryUsage()); 
-      ws.send(JSON.stringify(process.memoryUsage()), function () { /* ignore errors */ });  
+      ws.send(JSON.stringify(process.memoryUsage()), function () {  });  
   }, 500);
 
   ws.on('message', function incoming(data){
@@ -76,11 +77,11 @@ wss2.on('connection', function(ws){
       // splitSign = ','
       // ws.send(
       //   getRandomInt(1,10) + splitSign  + getRandomInt(1,10) + splitSign  + getRandomInt(1,10) + splitSign + getRandomInt(1,10)
-      //   ,function () { /* ignore errors */ }); 
+      //   ,function () {   }); 
 
       sensorData =  { "id": "sensor01" , "value": getRandomInt(1,10)}
       ws.send(
-         JSON.stringify(sensorData) ,function () { /* ignore errors */ }); 
+         JSON.stringify(sensorData) ,function () {   }); 
 
   }, 500);
 
@@ -112,4 +113,4 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
 }
 
- 
+ */
