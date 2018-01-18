@@ -24,7 +24,7 @@ app.get('/_ah/start', function(req, res) {
 
 var server = http.createServer(app);
 server.on('request', app);
-server.listen(8080, function () {
+server.listen(80, function () {
    console.log('Listening on http://localhost:8080');
  });
 
